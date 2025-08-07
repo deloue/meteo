@@ -21,6 +21,8 @@ function refreshweather(response) {
   temperatureElement.innerHTML = Math.round(temperature);
   timeElement.innerHTML = `${formateDate(date)}, ${description}`;
   iconElement.innerHTML = `<img src="https://openweathermap.org/img/wn/${iconCode}@2x.png" class="weather-app-icon" />`;
+
+  getForecast(response.data.name);
 }
 
 function formateDate(date) {
@@ -56,7 +58,15 @@ function handleSearchSubmit(event) {
   searchCity(searchInput.value);
 }
 
-function displayForecast() {
+function getForecast(city) {
+  let apiKey = "ff6e78b219e243b3f72eaf0251bd1e56";
+  let apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}&units=metric`;
+  axios.get(apiUrl).then(displayForecast);
+}
+
+function displayForecast(response) {
+  console.log(response.data);
+
   let days = ["Tue", "Wed", "Thu", "Fri", "Sat"];
   let forecastHtml = "";
 
@@ -85,4 +95,3 @@ let searchFormElement = document.querySelector("#search-form");
 searchFormElement.addEventListener("submit", handleSearchSubmit);
 
 searchCity("Paris");
-displayForecast();
