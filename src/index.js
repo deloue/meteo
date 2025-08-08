@@ -67,28 +67,34 @@ function getForecast(city) {
 function displayForecast(response) {
   console.log(response.data);
 
-  let days = ["Tue", "Wed", "Thu", "Fri", "Sat"];
   let forecastHtml = "";
 
-  days.forEach(function (day) {
-    forecastHtml =
-      forecastHtml +
-      `
+  response.data.list.slice(0, 5).forEach(function (forecast) {
+    let date = new Date(forecast.dt * 1000);
+    let options = { weekday: "short" };
+    let dayName = date.toLocaleDateString("en-US", options);
+
+    forecastHtml += `
       <div class="weather-forecast-day">
-        <div class="weather-forecast-date">${day}</div>
-        <div class="weather-forecast-icon">🌤️</div>
+        <div class="weather-forecast-date">${dayName}</div>
+        
+          <img src="https://openweathermap.org/img/wn/${
+            forecast.weather[0].icon
+          }@2x.png" class="weather-forecast-icon" />
+       
         <div class="weather-forecast-temperatures">
           <div class="weather-forecast-temperature">
-            <strong>15º</strong>
+            <strong>${Math.round(forecast.main.temp_max)}º</strong>
           </div>
-          <div class="weather-forecast-temperature">9º</div>
+          <div class="weather-forecast-temperature">${Math.round(
+            forecast.main.temp_min
+          )}º</div>
         </div>
       </div>
     `;
   });
 
-  let forecastElement = document.querySelector("#forecast");
-  forecastElement.innerHTML = forecastHtml;
+  document.querySelector("#forecast").innerHTML = forecastHtml;
 }
 
 let searchFormElement = document.querySelector("#search-form");
